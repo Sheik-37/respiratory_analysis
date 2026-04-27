@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(21, 30, 50, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .status-card {
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+    .status-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+        pointer-events: none;
+    }
+    .data-label {
+        color: var(--accent-cyan);
+        font-size: 0.7rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    .data-value {
+        color: var(--text-main);
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    .audio-container {
+        background: rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+    }
+    audio {
+        filter: invert(100%) hue-rotate(180deg) brightness(1.2);
+        width: 100%;
+        height: 40px;
+    }
+    .recommendation-content {
+        color: var(--text-dim);
+        line-height: 1.8;
+    }
+    .recommendation-content h6 {
+        color: var(--accent-cyan);
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1.5px;
+        margin-top: 1.5rem;
+        font-weight: 800;
+    }
+    .recommendation-content ul {
+        list-style: none;
+        padding-left: 0;
+    }
+    .recommendation-content li {
+        position: relative;
+        padding-left: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+    .recommendation-content li::before {
+        content: '▹';
+        position: absolute;
+        left: 0;
+        color: var(--accent-cyan);
+    }
+</style>
+
+<div class="row mb-5 pb-4 align-items-center" style="border-bottom: 1px solid var(--border-subtle);">
+    <div class="col-md-8">
+        <h2 class="fw-bolder mb-2 d-flex align-items-center gap-3" style="color: var(--text-main); letter-spacing: 1px;">
+            <div class="p-2 rounded bg-dark border" style="border-color: var(--accent-cyan) !important;">
+                <i class="fas fa-file-waveform" style="color: var(--accent-cyan);"></i>
+            </div>
+            Diagnostic Result
+        </h2>
+        <p class="mb-0 text-dim small text-uppercase" style="letter-spacing: 3px; padding-left: 55px;">Sequence ID: #{{ report.id }} • Neural Telemetry</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card glass-card h-100 border-0">
+            <div class="card-body p-4 p-xl-5">
+                <h6 class="data-label mb-4"><i class="fas fa-id-fingerprint me-2"></i>Subject Parameters</h6>
+                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex justify-content-between border-bottom border-dark pb-3">
+                        <span class="text-dim">Subject Name</span>
+                        <span class="data-value text-uppercase">{{ report.patient.name }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom border-dark pb-3">
+                        <span class="text-dim">Comms Frequency</span>
+                        <span class="data-value font-monospace">{{ report.patient.phone }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-dim">Analysis Chronology</span>
+                        <span class="data-value">{{ report.created_at.strftime('%Y-%m-%d | %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card status-card h-100 border-0 
+            {% if report.severity == 'Low' or report.disease_name == 'Healthy' %}bg-success
+            {% elif report.severity == 'Critical' %}bg-danger
+            {% elif report.severity == 'High' %}bg-warning
+            {% else %}bg-primary{% endif %}" style="box-shadow: 0 15px 35px rgba(0,0,0,0.4);">
+            <div class="card-body p-4 p-xl-5 d-flex flex-column justify-content-center">
+                <h6 class="text-uppercase fw-bold text-black-50 small tracking-widest mb-2 font-monospace">Neural Output</h6>
+                <h2 class="fw-bolder text-dark text-uppercase mb-4" style="letter-spacing: -1px;">{{ report.disease_name if report.disease_name else report.disease_type.replace('_', ' ') }}</h2>
+                
+                <div class="bg-black bg-opacity-25 rounded-4 p-4 text-dark border border-black border-opacity-10">
+                    <div class="row g-3">
+                        <div class="col-6 border-end border-black border-opacity-10">
+                            <span class="small fw-bold text-uppercase opacity-50 d-block mb-1">Risk Level</span>
+                            <span class="h5 fw-black mb-0 text-uppercase">{{ report.severity if report.severity else 'Unranked' }}</span>
+                        </div>
+                        <div class="col-6 ps-4">
+                            <span class="small fw-bold text-uppercase opacity-50 d-block mb-1">AI Confidence</span>
+                            <span class="h5 fw-black mb-0 font-monospace">{{ "%.2f"|format(report.confidence * 100) }}%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card glass-card border-0 mb-4 overflow-hidden">
+    <div class="card-header bg-transparent border-bottom p-4" style="border-color: rgba(255,255,255,0.05) !important;">
+        <h5 class="mb-0 fw-bold text-uppercase tracking-wider" style="color: var(--text-main);">
+            <i class="fas fa-wave-square me-3" style="color: var(--accent-cyan);"></i>Acoustic Signal Processing
+        </h5>
+    </div>
+    <div class="card-body p-4 p-xl-5">
+        <div class="audio-container p-4 mb-4 text-center border">
+            <div class="d-flex align-items-center justify-content-center gap-4 mb-4">
+                <div class="spinner-grow text-info" style="width: 10px; height: 10px;"></div>
+                <h6 class="text-uppercase mb-0 tracking-widest text-dim" style="font-size: 0.75rem;">Source Audio Ingestion</h6>
+                <div class="spinner-grow text-info" style="width: 10px; height: 10px;"></div>
+            </div>
+            
+            <div class="mx-auto" style="max-width: 500px;">
+                <audio controls id="respiratoryAudio">
+                    <source src="{{ url_for('static', filename='uploads/' + report.audio_path) }}" type="audio/wav">
+                    <source src="{{ url_for('static', filename='uploads/' + report.audio_path) }}" type="audio/mpeg">
+                </audio>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <div class="d-inline-flex align-items-center gap-3 px-4 py-2 rounded-pill bg-dark border border-secondary border-opacity-25">
+                <span class="small text-dim text-uppercase tracking-wider">Acoustic Signature:</span>
+                <span class="fw-bold font-monospace text-info" style="letter-spacing: 1px;">
+                    {{ report.acoustic_features if report.acoustic_features else 'Standard Spectral Profile' }}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-6">
+        <div class="card glass-card border-0 h-100">
+            <div class="card-header bg-transparent border-bottom p-4" style="border-color: rgba(255,255,255,0.05) !important;">
+                <h6 class="fw-bold mb-0 text-uppercase tracking-wider" style="color: var(--text-main);">
+                    <i class="fas fa-brain me-2" style="color: var(--accent-cyan);"></i>Pathology Analysis
+                </h6>
+            </div>
+            <div class="card-body p-4 p-xl-5">
+                <p class="mb-0 text-dim lh-lg font-light">
+                    {{ report.disease_description if report.disease_description else 'The neural framework classifies this signal as indicative of the diagnosed pathology based on temporal and spectral deviations captured in the log-mel spectrogram.' }}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card glass-card border-0 h-100">
+            <div class="card-header bg-transparent border-bottom p-4" style="border-color: rgba(255,255,255,0.05) !important;">
+                <h6 class="fw-bold mb-0 text-uppercase tracking-wider" style="color: var(--text-main);">
+                    <i class="fas fa-shield-virus me-2" style="color: var(--accent-cyan);"></i>Action Protocol
+                </h6>
+            </div>
+            <div class="card-body p-4 p-xl-5">
+                <div class="recommendation-content">
+                    {% if report.recommendations %}
+                        {{ report.recommendations|safe }}
+                    {% else %}
+                        <p>{{ report.recommendations_raw if report.recommendations_raw else 'Awaiting clinical specialist review for personalized treatment trajectory.' }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 bg-transparent print-hide mt-5">
+    <div class="card-body text-center p-0 d-flex flex-column flex-sm-row justify-content-center gap-3">
+        <a href="{{ url_for('patient_dashboard') }}" class="btn px-5 py-3 rounded-pill fw-bold text-uppercase d-flex align-items-center justify-content-center gap-2" style="background: rgba(255,255,255,0.05); color: var(--text-main); border: 1px solid var(--border-subtle); letter-spacing: 1px; font-size: 0.8rem;">
+            <i class="fas fa-chevron-left"></i> Subject Dashboard
+        </a>
+        <button onclick="window.print()" class="btn btn-primary px-5 py-3 rounded-pill fw-bold text-uppercase d-flex align-items-center justify-content-center gap-2 shadow-lg" style="letter-spacing: 1.5px; font-size: 0.8rem;">
+            <i class="fas fa-file-pdf"></i> Export Telemetry Report
+        </button>
+    </div>
+</div>
+
+<style>
+    @media print {
+        body { background: white !important; color: black !important; }
+        .glass-card, .status-card { 
+            background: white !important; 
+            color: black !important; 
+            border: 1px solid #ddd !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+        }
+        .text-dim, .data-label { color: #555 !important; }
+        .data-value, h2, h4 { color: black !important; }
+        .btn, .print-hide, audio, .spinner-grow { display: none !important; }
+        .audio-container::after {
+            content: "[ Acoustic Ingestion Verified via Digital ID: {{ report.id }} ]";
+            display: block; font-family: monospace; font-size: 0.8rem; margin-top: 10px;
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-12">
+        <h2 class="fw-bold mb-0" style="color: var(--primary-color);">
+            <i class="fas fa-robot me-2" style="color: var(--secondary-color);"></i>Virtual Clinical Assistant
+        </h2>
+        <p class="text-muted mt-1">AI-powered support for medical inquiries, recovery protocols, and fracture information.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden d-flex flex-column">
+            <div class="card-header border-bottom p-4 bg-white d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 45px; height: 45px;">
+                        <i class="fas fa-stethoscope fs-5" style="color: var(--primary-color);"></i>
+                    </div>
+                    <div>
+                        <h5 class="mb-0 fw-bold" style="color: var(--primary-color);">Support Chat</h5>
+                        <small class="text-success fw-bold"><i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i>Online</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-body p-4 d-flex flex-column" style="height: 500px; overflow-y: auto; background-color: #f8fafc;" id="chatMessages">
+                <div class="message bot-message mb-4">
+                    <div class="d-flex align-items-end">
+                        <div class="me-2 mb-1">
+                            <div class="bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                <i class="fas fa-robot" style="color: var(--secondary-color);"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white border shadow-sm p-3 rounded-4" style="max-width: 80%; border-bottom-left-radius: 4px !important;">
+                            <p class="fw-bold mb-2 text-dark small">Clinical Assistant</p>
+                            <p class="mb-2 text-dark">Hello! I'm your AI medical assistant. I can help you with questions regarding:</p>
+                            <ul class="mb-3 text-dark small ps-3" style="line-height: 1.6;">
+                                <li>Fracture types and classifications</li>
+                                <li>Recovery time and healing process</li>
+                                <li>Pain management</li>
+                                <li>Surgical procedures</li>
+                                <li>Exercise and physical therapy</li>
+                                <li>Precautions and restrictions</li>
+                            </ul>
+                            <p class="mb-1 text-dark fw-bold">How can I assist you today?</p>
+                            <div class="text-end">
+                                <small class="text-muted" style="font-size: 0.7rem;">{{ now.strftime('%I:%M %p') if now else 'Just now' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-footer bg-white border-top p-4 mt-auto">
+                <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden border">
+                    <input type="text" class="form-control border-0 px-4 fs-6 shadow-none" id="chatInput" 
+                           placeholder="Type your medical inquiry here..." 
+                           onkeypress="if(event.key==='Enter') sendMessage()">
+                    <button class="btn btn-primary px-4 fw-bold" style="background-color: var(--secondary-color); border: none;" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane me-1"></i> Send
+                    </button>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted"><i class="fas fa-shield-alt me-1"></i> Responses are AI-generated. Always consult your doctor for medical emergencies.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4 d-flex flex-column gap-4">
+     <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+    <div class="card-header bg-white border-bottom p-4">
+        <h6 class="mb-0 fw-bold text-uppercase tracking-wider small text-muted"><i class="fas fa-bolt me-2 text-warning"></i>Quick Inquiries</h6>
+    </div>
+    <div class="card-body p-2" style="max-height: 400px; overflow-y: auto;">
+        <div class="list-group list-group-flush border-0">
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('What is an intertrochanteric fracture?')">
+                <div class="bg-danger bg-opacity-10 text-danger rounded p-2 me-3"><i class="fas fa-bone"></i></div>
+                <span class="small fw-bold text-dark">What is an intertrochanteric fracture?</span>
+            </button>
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('How long does bone healing and recovery take?')">
+                <div class="bg-warning bg-opacity-10 text-warning rounded p-2 me-3"><i class="fas fa-clock"></i></div>
+                <span class="small fw-bold text-dark">How long does healing take?</span>
+            </button>
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('What kind of surgery or operation is needed?')">
+                <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3"><i class="fas fa-procedures"></i></div>
+                <span class="small fw-bold text-dark">What kind of surgery is needed?</span>
+            </button>
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('What pain medications are prescribed?')">
+                <div class="bg-info bg-opacity-10 text-info rounded p-2 me-3"><i class="fas fa-pills"></i></div>
+                <span class="small fw-bold text-dark">What pain medications are used?</span>
+            </button>
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('When can I start walking and bearing weight?')">
+                <div class="bg-secondary bg-opacity-10 text-secondary rounded p-2 me-3"><i class="fas fa-walking"></i></div>
+                <span class="small fw-bold text-dark">When can I start walking?</span>
+            </button>
+            <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3 mb-1" onclick="quickQuestion('What is the best sleeping position in bed?')">
+                <div class="bg-dark bg-opacity-10 text-dark rounded p-2 me-3"><i class="fas fa-bed"></i></div>
+                <span class="small fw-bold text-dark">What is the best sleeping position?</span>
+            </button>
+             <button class="list-group-item list-group-item-action border-0 py-3 d-flex align-items-center rounded-3" onclick="quickQuestion('What should I eat? What diet is good for calcium?')">
+                <div class="bg-success bg-opacity-10 text-success rounded p-2 me-3"><i class="fas fa-apple-alt"></i></div>
+                <span class="small fw-bold text-dark">What diet helps bone healing?</span>
+            </button>
+        </div>
+    </div>
+</div>
+        
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-bottom p-4">
+                <h6 class="mb-0 fw-bold text-uppercase tracking-wider small text-muted"><i class="fas fa-history me-2 text-secondary"></i>Recent History</h6>
+            </div>
+            <div class="card-body p-0" style="max-height: 220px; overflow-y: auto;" id="chatHistory">
+                <div class="p-5 text-center">
+                    <i class="fas fa-comment-dots fa-2x text-muted opacity-25 mb-2"></i>
+                    <p class="text-muted small mb-0">No previous chats recorded.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.message {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.list-group-item {
+    transition: all 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f1f5f9;
+    transform: translateX(4px);
+}
+
+.list-group-item:active {
+    transform: translateX(2px);
+}
+
+#chatMessages {
+    scroll-behavior: smooth;
+}
+
+/* Custom scrollbar for chat area */
+#chatMessages::-webkit-scrollbar {
+    width: 6px;
+}
+#chatMessages::-webkit-scrollbar-track {
+    background: transparent;
+}
+#chatMessages::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let chatHistory = [];
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (message) {
+        // Add user message to chat
+        addMessage(message, 'user');
+        
+        // Clear input
+        input.value = '';
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Send to server
+        fetch('/chatbot', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({message: message})
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Remove typing indicator
+            removeTypingIndicator();
+            
+            // Add bot response
+            addMessage(data.response, 'bot');
+            
+            // Save to chat history
+            saveToHistory(message, data.response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            removeTypingIndicator();
+            addMessage('Sorry, I encountered an error connecting to the clinical database. Please try again.', 'bot');
+        });
+    }
+}
+
+function addMessage(text, sender) {
+    const messagesDiv = document.getElementById('chatMessages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message ${sender}-message mb-4`;
+    
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    if (sender === 'user') {
+        messageDiv.innerHTML = `
+            <div class="d-flex align-items-end justify-content-end">
+                <div class="p-3 rounded-4 shadow-sm" style="max-width: 80%; background-color: var(--primary-color); color: white; border-bottom-right-radius: 4px !important;">
+                    <p class="mb-1">${text}</p>
+                    <div class="text-end">
+                        <small class="text-white-50" style="font-size: 0.7rem;">${timeString}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else {
+        // Format the bot's response to handle simple markdown-like lists if needed
+        let formattedText = text.replace(/\n/g, '<br>');
+        
+        messageDiv.innerHTML = `
+            <div class="d-flex align-items-end">
+                <div class="me-2 mb-1">
+                    <div class="bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                        <i class="fas fa-robot" style="color: var(--secondary-color);"></i>
+                    </div>
+                </div>
+                <div class="bg-white border shadow-sm p-3 rounded-4" style="max-width: 80%; border-bottom-left-radius: 4px !important;">
+                    <p class="fw-bold mb-1 text-dark small">Clinical Assistant</p>
+                    <p class="mb-1 text-dark" style="line-height: 1.5;">${formattedText}</p>
+                    <div class="text-end">
+                        <small class="text-muted" style="font-size: 0.7rem;">${timeString}</small>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    messagesDiv.appendChild(messageDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function showTypingIndicator() {
+    const messagesDiv = document.getElementById('chatMessages');
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'typingIndicator';
+    typingDiv.className = 'message bot-message mb-4';
+    typingDiv.innerHTML = `
+        <div class="d-flex align-items-end">
+            <div class="me-2 mb-1">
+                <div class="bg-white border shadow-sm rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                    <i class="fas fa-robot" style="color: var(--secondary-color);"></i>
+                </div>
+            </div>
+            <div class="bg-white border shadow-sm p-3 rounded-4 d-flex align-items-center" style="border-bottom-left-radius: 4px !important; min-width: 80px; height: 45px;">
+                <div class="spinner-grow spinner-grow-sm text-secondary me-1" role="status" style="width: 0.5rem; height: 0.5rem; animation-delay: 0s;"></div>
+                <div class="spinner-grow spinner-grow-sm text-secondary me-1" role="status" style="width: 0.5rem; height: 0.5rem; animation-delay: 0.2s;"></div>
+                <div class="spinner-grow spinner-grow-sm text-secondary" role="status" style="width: 0.5rem; height: 0.5rem; animation-delay: 0.4s;"></div>
+            </div>
+        </div>
+    `;
+    messagesDiv.appendChild(typingDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+function quickQuestion(question) {
+    document.getElementById('chatInput').value = question;
+    sendMessage();
+}
+
+function saveToHistory(question, answer) {
+    chatHistory.unshift({question, answer, time: new Date()});
+    if (chatHistory.length > 10) {
+        chatHistory.pop();
+    }
+    updateChatHistory();
+}
+
+function updateChatHistory() {
+    const historyDiv = document.getElementById('chatHistory');
+    
+    if (chatHistory.length === 0) {
+        historyDiv.innerHTML = `
+            <div class="p-5 text-center">
+                <i class="fas fa-comment-dots fa-2x text-muted opacity-25 mb-2"></i>
+                <p class="text-muted small mb-0">No previous chats recorded.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '<div class="list-group list-group-flush border-0">';
+    chatHistory.forEach((chat, index) => {
+        const timeString = new Date(chat.time).toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        let truncatedQ = chat.question.length > 35 ? chat.question.substring(0, 35) + '...' : chat.question;
+        
+        html += `
+            <button class="list-group-item list-group-item-action border-bottom py-3" onclick="replayQuestion('${chat.question.replace(/'/g, "\\'")}')">
+                <div class="d-flex w-100 justify-content-between mb-1">
+                    <small class="fw-bold text-dark"><i class="fas fa-chevron-right me-2" style="color: var(--secondary-color); font-size: 10px;"></i>${truncatedQ}</small>
+                </div>
+                <small class="text-muted d-block">${timeString}</small>
+            </button>
+        `;
+    });
+    html += '</div>';
+    
+    historyDiv.innerHTML = html;
+}
+
+function replayQuestion(question) {
+    document.getElementById('chatInput').value = question;
+    sendMessage();
+}
+
+function loadChatHistory() {
+    fetch('/chat-history')
+        .then(response => response.json())
+        .then(data => {
+            if (data.history && data.history.length > 0) {
+                chatHistory = data.history;
+                updateChatHistory();
+            }
+        })
+        .catch(error => console.error('Error loading history:', error));
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // We already have the initial HTML message in the DOM, so no need to JS inject it unless history is loaded.
+});
+</script>
+{% endblock %}

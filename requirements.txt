@@ -1,0 +1,26 @@
+# --- Core Web Framework ---
+Flask==2.3.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.2
+Flask-Migrate==4.0.5
+Flask-WTF==1.1.1
+WTForms==3.0.1
+python-dotenv==1.0.0
+werkzeug==2.3.7
+email-validator==2.0.0
+
+# --- Server & Database ---
+gunicorn==21.2.0
+psycopg2-binary==2.9.7
+
+# --- Data Processing ---
+numpy==1.24.3
+pandas==2.0.3
+Pillow==10.1.0
+
+# --- Audio & Machine Learning ---
+librosa==0.10.1
+soundfile==0.12.1
+torch==2.1.0
+torchaudio==2.1.0
+scikit-learn==1.3.2

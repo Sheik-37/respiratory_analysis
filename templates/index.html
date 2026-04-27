@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center mb-5 py-4 py-lg-5" style="min-height: 80vh;">
+    <div class="col-lg-6 pe-lg-5 text-center text-lg-start mb-5 mb-lg-0 z-index-1">
+        <div class="badge-glass mb-4 d-inline-block px-4 py-2 rounded-pill" style="background: rgba(0, 242, 254, 0.1); border: 1px solid rgba(0, 242, 254, 0.2);">
+            <i class="fas fa-microchip me-2" style="color: var(--accent-cyan);"></i> 
+            <span style="color: var(--text-main); font-weight: 600; letter-spacing: 1px; font-size: 0.85rem; text-transform: uppercase;">Neural Diagnostic Core Active</span>
+        </div>
+        
+        <h1 class="display-3 fw-bolder mb-4" style="line-height: 1.1; letter-spacing: -1px;">
+            Decode Audio. <br>
+            <span style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 10px rgba(0,242,254,0.3));">Isolate Pathology.</span>
+        </h1>
+        
+        <p class="fs-5 mb-5 fw-light" style="color: var(--text-dim); line-height: 1.7; max-width: 90%; margin: 0 auto 0 0;">
+            Deploying next-generation CNN+BiLSTM architecture to process respiratory acoustics. Delivering sub-second, highly accurate clinical risk assessments.
+        </p>
+        
+        <div class="d-flex flex-column flex-sm-row gap-4 justify-content-center justify-content-lg-start">
+            <a href="/patient-login" class="btn btn-primary btn-lg px-5 py-3 rounded-pill" style="font-size: 1.1rem;">
+                <i class="fas fa-satellite-dish me-2"></i> Transmit Signal
+            </a>
+            <a href="/admin-login" class="btn btn-lg px-5 py-3 rounded-pill" style="background: transparent; border: 1px solid var(--border-subtle); color: var(--text-main); transition: all 0.3s;">
+                <i class="fas fa-fingerprint me-2"></i> Clinical Override
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-lg-6 position-relative">
+        <div class="hero-graphic text-center">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle position-relative" 
+                 style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(0,242,254,0.2) 0%, transparent 70%); border: 1px solid rgba(0,242,254,0.3); box-shadow: 0 0 50px rgba(0,242,254,0.2); z-index: 2;">
+                <i class="fas fa-lungs fa-7x" style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 15px rgba(0,242,254,0.5));"></i>
+                
+                <div class="position-absolute rounded-circle" style="width: 100%; height: 100%; border: 1px dashed rgba(255,255,255,0.1); animation: spin 20s linear infinite;"></div>
+                <div class="position-absolute rounded-circle" style="width: 120%; height: 120%; border: 1px solid rgba(0,242,254,0.1); animation: spin 30s linear infinite reverse;"></div>
+            </div>
+            
+            <div class="floating-node position-absolute d-inline-flex align-items-center justify-content-center rounded-circle shadow-lg" 
+                 style="width: 70px; height: 70px; background: rgba(21, 30, 50, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border-subtle); top: 5%; left: 10%; z-index: 3; animation: float 6s ease-in-out infinite;">
+                <i class="fas fa-wave-square fa-xl" style="color: #4facfe;"></i>
+            </div>
+            <div class="floating-node position-absolute d-inline-flex align-items-center justify-content-center rounded-circle shadow-lg" 
+                 style="width: 60px; height: 60px; background: rgba(21, 30, 50, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border-subtle); bottom: 10%; right: 15%; z-index: 3; animation: float 5s ease-in-out infinite 1s;">
+                <i class="fas fa-virus fa-xl text-danger" style="filter: drop-shadow(0 0 8px rgba(220,53,69,0.5));"></i>
+            </div>
+            <div class="floating-node position-absolute d-inline-flex align-items-center justify-content-center rounded-circle shadow-lg" 
+                 style="width: 50px; height: 50px; background: rgba(21, 30, 50, 0.8); backdrop-filter: blur(10px); border: 1px solid var(--border-subtle); top: 30%; right: 5%; z-index: 3; animation: float 4s ease-in-out infinite 2s;">
+                <i class="fas fa-file-audio fa-lg text-warning"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+    .btn-outline-custom:hover { background: rgba(255,255,255,0.05); border-color: var(--accent-cyan) !important; color: var(--accent-cyan) !important; box-shadow: inset 0 0 10px rgba(0,242,254,0.1); }
+</style>
+
+<div class="row mb-5 pt-5 text-center position-relative">
+    <div class="position-absolute top-0 start-50 translate-middle-x" style="width: 60%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,242,254,0.5), transparent);"></div>
+    
+    <div class="col-12 mb-5">
+        <h2 class="fw-bolder" style="color: var(--text-main); letter-spacing: 1px; text-transform: uppercase;">Telemetry Protocol</h2>
+        <p class="text-dim">Three-phase automated analysis matrix</p>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 p-5 bg-transparent border-0 position-relative" style="transition: transform 0.3s;">
+            <div class="mb-4 d-inline-block p-4 rounded-circle" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);">
+                <i class="fas fa-satellite-dish fa-3x" style="color: var(--text-dim);"></i>
+            </div>
+            <h5 class="fw-bold text-uppercase tracking-wider mb-3">1. Ingestion</h5>
+            <p class="text-muted small lh-lg">Secure capture and encryption of respiratory audio streams via HIPAA-compliant API endpoints.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 p-5 bg-transparent border-0 position-relative">
+            <div class="mb-4 d-inline-block p-4 rounded-circle" style="background: rgba(0,242,254,0.05); border: 1px solid rgba(0,242,254,0.2); box-shadow: 0 0 20px rgba(0,242,254,0.1);">
+                <i class="fas fa-network-wired fa-3x" style="color: var(--accent-cyan);"></i>
+            </div>
+            <h5 class="fw-bold text-uppercase tracking-wider mb-3" style="color: var(--accent-cyan);">2. Neural Mapping</h5>
+            <p class="text-muted small lh-lg">Extraction of Log-Mel Spectrograms and hidden acoustic markers utilizing deep convolutional networks.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 p-5 bg-transparent border-0 position-relative">
+            <div class="mb-4 d-inline-block p-4 rounded-circle" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle);">
+                <i class="fas fa-chart-pie fa-3x" style="color: #4facfe;"></i>
+            </div>
+            <h5 class="fw-bold text-uppercase tracking-wider mb-3">3. Synthesis</h5>
+            <p class="text-muted small lh-lg">Instantaneous probabilistic classification defining pathology thresholds and clinical action items.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5 g-4 mt-4">
+    <div class="col-md-4">
+        <div class="card h-100 p-4 border-0" style="background: linear-gradient(145deg, rgba(21, 30, 50, 0.9), rgba(11, 17, 33, 0.9)); backdrop-filter: blur(10px);">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3" style="border-color: rgba(255,255,255,0.05) !important;">
+                <i class="fas fa-project-diagram fa-2x" style="color: var(--accent-cyan);"></i>
+                <span class="badge bg-dark border border-secondary text-secondary">Core</span>
+            </div>
+            <h5 class="fw-bold mb-3">Hybrid Topology</h5>
+            <p class="small text-dim mb-0 lh-lg">Synchronized spatial parsing (CNN) paired with sequence memory modeling (BiLSTM) for apex diagnostic fidelity.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-4 border-0" style="background: linear-gradient(145deg, rgba(21, 30, 50, 0.9), rgba(11, 17, 33, 0.9)); backdrop-filter: blur(10px);">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3" style="border-color: rgba(255,255,255,0.05) !important;">
+                <i class="fas fa-filter fa-2x text-warning"></i>
+                <span class="badge bg-dark border border-secondary text-secondary">Audio</span>
+            </div>
+            <h5 class="fw-bold mb-3">Signal Isolation</h5>
+            <p class="small text-dim mb-0 lh-lg">Algorithmic spectral gating mitigates ambient noise pollution, ensuring precise analysis in chaotic clinical sectors.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 p-4 border-0" style="background: linear-gradient(145deg, rgba(21, 30, 50, 0.9), rgba(11, 17, 33, 0.9)); backdrop-filter: blur(10px);">
+            <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3" style="border-color: rgba(255,255,255,0.05) !important;">
+                <i class="fas fa-stopwatch fa-2x" style="color: #4facfe;"></i>
+                <span class="badge bg-dark border border-secondary text-secondary">Perf</span>
+            </div>
+            <h5 class="fw-bold mb-3">Zero-Latency Inference</h5>
+            <p class="small text-dim mb-0 lh-lg">Optimized tensor operations enable near-instantaneous processing suitable for immediate point-of-care decisions.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5 g-4 mt-2">
+    <div class="col-lg-6">
+        <div class="card h-100 p-4 p-lg-5 border-0" style="background: rgba(21, 30, 50, 0.5);">
+            <h5 class="fw-bold mb-4 border-bottom pb-3 text-uppercase tracking-wider" style="border-color: var(--border-subtle) !important;">
+                <i class="fas fa-vial text-muted me-2"></i> Pathological Vectors
+            </h5>
+            <div class="d-flex flex-column gap-3 mt-4">
+                <div class="d-flex align-items-center p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 40px; height: 40px; background: rgba(220,53,69,0.1);">
+                        <i class="fas fa-lungs-virus text-danger"></i>
+                    </div>
+                    <div class="fw-bold tracking-wide">Asthmatic Constriction</div>
+                </div>
+                <div class="d-flex align-items-center p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 40px; height: 40px; background: rgba(255,193,7,0.1);">
+                        <i class="fas fa-head-side-cough text-warning"></i>
+                    </div>
+                    <div class="fw-bold tracking-wide">Bronchial Inflammation</div>
+                </div>
+                <div class="d-flex align-items-center p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 40px; height: 40px; background: rgba(108,117,125,0.1);">
+                        <i class="fas fa-viruses text-secondary"></i>
+                    </div>
+                    <div class="fw-bold tracking-wide">COPD Indicators</div>
+                </div>
+                <div class="d-flex align-items-center p-3 rounded" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 40px; height: 40px; background: rgba(13,202,240,0.1);">
+                        <i class="fas fa-bacterium text-info"></i>
+                    </div>
+                    <div class="fw-bold tracking-wide">Pneumonic Signatures</div>
+                </div>
+                <div class="d-flex align-items-center p-3 rounded" style="background: rgba(25,135,84,0.1); border: 1px solid rgba(25,135,84,0.2);">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center me-4" style="width: 40px; height: 40px; background: rgba(25,135,84,0.2);">
+                        <i class="fas fa-shield-heart text-success"></i>
+                    </div>
+                    <div class="fw-bold tracking-wide text-success">Nominal Baseline</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-6">
+        <div class="card h-100 p-4 p-lg-5 border-0 position-relative overflow-hidden" style="background: rgba(0, 242, 254, 0.03); border: 1px solid rgba(0, 242, 254, 0.1) !important;">
+            <div class="position-absolute" style="top: -50px; right: -50px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(0,242,254,0.1) 0%, transparent 70%);"></div>
+            
+            <h5 class="fw-bold mb-4 border-bottom pb-3 text-uppercase tracking-wider" style="color: var(--accent-cyan); border-color: rgba(0, 242, 254, 0.2) !important;">
+                <i class="fas fa-cogs me-2"></i> Operational Parameters
+            </h5>
+            
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-4 mt-4 relative z-1">
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Automated Silence Trimming & Normalization</span>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Real-time Spectrographic Visualization</span>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Longitudinal Patient Acoustic Tracking</span>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Encrypted Clinical Report Generation (PDF)</span>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Strict Role-Based Access Control Matrix</span>
+                </li>
+                <li class="d-flex align-items-center">
+                    <i class="fas fa-chevron-right me-3" style="color: var(--accent-cyan); font-size: 0.8rem;"></i> 
+                    <span class="text-dim">Integrated Natural Language Query Engine</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

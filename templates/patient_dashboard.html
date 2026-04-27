@@ -1,0 +1,427 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(21, 30, 50, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 24px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .profile-orb {
+        width: 120px;
+        height: 120px;
+        background: rgba(0, 242, 254, 0.05);
+        border: 2px solid rgba(0, 242, 254, 0.3);
+        box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
+        position: relative;
+    }
+    .profile-orb i {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 8px rgba(0, 242, 254, 0.4));
+    }
+    .nav-pills .nav-link {
+        color: var(--text-dim);
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        transition: all 0.3s;
+    }
+    .nav-pills .nav-link.active {
+        background: var(--primary-gradient) !important;
+        color: #000 !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+    }
+    .upload-zone, .record-zone {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 2px dashed rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s;
+    }
+    .upload-zone:hover {
+        border-color: var(--accent-cyan) !important;
+        background: rgba(0, 242, 254, 0.05) !important;
+    }
+    .record-btn-glow {
+        box-shadow: 0 0 20px rgba(220, 53, 69, 0.3);
+    }
+    .table-row-hover:hover {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    .action-btn {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--text-main);
+        transition: all 0.2s;
+    }
+    .action-btn:hover {
+        background: rgba(0, 242, 254, 0.1);
+        color: var(--accent-cyan);
+    }
+</style>
+
+<div class="row mb-5 pb-4 align-items-center" style="border-bottom: 1px solid var(--border-subtle);">
+    <div class="col-md-8">
+        <h2 class="fw-bolder mb-2 d-flex align-items-center gap-3" style="color: var(--text-main); letter-spacing: 1px;">
+            <div class="p-2 rounded bg-dark border" style="border-color: var(--accent-cyan) !important;">
+                <i class="fas fa-lungs" style="color: var(--accent-cyan);"></i>
+            </div>
+            Subject Terminal
+        </h2>
+        <p class="mb-0 text-dim small text-uppercase" style="letter-spacing: 3px; padding-left: 55px;">Personal Acoustic Records & Telemetry</p>
+    </div>
+    <div class="col-md-4 text-md-end mt-4 mt-md-0">
+        <a href="{{ url_for('logout') }}" class="btn px-4 py-2 rounded-pill fw-bold d-flex align-items-center justify-content-center d-md-inline-flex gap-2" style="background: rgba(220, 53, 69, 0.1); color: #ef4444; border: 1px solid rgba(220, 53, 69, 0.3);">
+            <i class="fas fa-power-off"></i> Terminate Session
+        </a>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-lg-4">
+        <div class="card glass-card border-0 mb-4">
+            <div class="card-body p-4 p-xl-5 text-center position-relative">
+                <div class="position-absolute top-0 start-50 translate-middle-x mt-3" style="width: 80%; height: 1px; background: linear-gradient(90deg, transparent, rgba(0, 242, 254, 0.3), transparent);"></div>
+                
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 profile-orb">
+                    <i class="fas fa-user-circle fa-4x"></i>
+                </div>
+                <h4 class="fw-bolder mb-1" style="color: var(--text-main); letter-spacing: 1px;">{{ patient.name }}</h4>
+                <p class="small mb-4 font-monospace" style="color: var(--accent-cyan);">ID: SUB-{{ "%04d"|format(patient.id) }}</p>
+                
+                <div class="text-start mt-5">
+                    <h6 class="text-uppercase fw-bold text-dim small tracking-widest mb-4 border-bottom pb-2" style="border-color: rgba(255,255,255,0.05) !important;">Identity Parameters</h6>
+                    
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 me-3" style="width: 45px; height: 45px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-subtle);">
+                            <i class="fas fa-satellite-dish" style="color: #4facfe;"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold font-monospace" style="color: var(--text-main);">{{ patient.phone }}</p>
+                            <small class="text-dim text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px;">Comms Uplink</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex align-items-center">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 me-3" style="width: 45px; height: 45px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border-subtle);">
+                            <i class="fas fa-map-pin" style="color: var(--accent-cyan);"></i>
+                        </div>
+                        <div>
+                            <p class="mb-0 fw-bold text-uppercase" style="color: var(--text-main); font-size: 0.9rem;">{{ patient.district }}</p>
+                            <small class="text-dim d-block text-truncate" style="max-width: 180px; font-size: 0.75rem;">{{ patient.address or 'Sector Undefined' }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card glass-card border-0 h-100 overflow-hidden">
+            <div class="card-header bg-transparent border-bottom p-4" style="border-color: rgba(255,255,255,0.05) !important;">
+                <h6 class="fw-bold mb-0 text-uppercase tracking-wider" style="color: var(--text-main);">
+                    <i class="fas fa-user-astronaut me-2" style="color: var(--accent-cyan);"></i>Sector Specialists
+                </h6>
+            </div>
+            <div class="card-body p-0">
+                {% if doctors %}
+                    <div class="list-group list-group-flush bg-transparent">
+                    {% for doctor in doctors %}
+                        <div class="list-group-item p-4 border-bottom bg-transparent" style="border-color: rgba(255,255,255,0.05) !important;">
+                            <div class="d-flex align-items-start">
+                                <div class="d-inline-flex align-items-center justify-content-center rounded-circle me-3" style="width: 45px; height: 45px; background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.2);">
+                                    <i class="fas fa-user-md" style="color: #a855f7;"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1" style="color: var(--text-main);">Dr. {{ doctor.name }}</h6>
+                                    <p class="text-dim small mb-3 text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">{{ doctor.specialization }}</p>
+                                    <a href="tel:{{ doctor.phone }}" class="btn btn-sm rounded-pill fw-bold px-3 d-flex align-items-center justify-content-center gap-2" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); font-size: 0.75rem; transition: all 0.2s;">
+                                        <i class="fas fa-phone-alt" style="color: var(--accent-cyan);"></i> Initiate Comms
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="p-5 text-center">
+                        <i class="fas fa-radar fa-3x text-muted opacity-25 mb-4"></i>
+                        <p class="text-dim small text-uppercase tracking-widest">No Sector Operators Found</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card glass-card border-0 mb-4 h-100 overflow-hidden">
+            <div class="card-header bg-transparent border-bottom p-4" style="border-color: rgba(255,255,255,0.05) !important;">
+                <h5 class="fw-bold mb-0 text-uppercase tracking-wider" style="color: var(--text-main);">
+                    <i class="fas fa-wave-square me-2" style="color: var(--accent-cyan);"></i>Telemetry Ingestion
+                </h5>
+            </div>
+            
+            <div class="card-body p-4 p-xl-5">
+                <ul class="nav nav-pills mb-5 justify-content-center gap-4" id="audioTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active px-5 py-3 rounded-pill fw-bold text-uppercase" style="letter-spacing: 1.5px; font-size: 0.8rem;" id="upload-tab" data-bs-toggle="pill" data-bs-target="#upload" type="button" role="tab">
+                            <i class="fas fa-file-export me-2"></i>Signal Upload
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link px-5 py-3 rounded-pill fw-bold text-uppercase" style="letter-spacing: 1.5px; font-size: 0.8rem;" id="record-tab" data-bs-toggle="pill" data-bs-target="#record" type="button" role="tab">
+                            <i class="fas fa-satellite me-2"></i>Live Capture
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="audioTabContent">
+                    <div class="tab-pane fade show active" id="upload" role="tabpanel">
+                        <form action="{{ url_for('upload_scan') }}" method="POST" enctype="multipart/form-data" onsubmit="return showUploadLoadingState()">
+                            <div class="upload-zone rounded-4 p-5 text-center mb-5 position-relative overflow-hidden">
+                                <div class="position-absolute w-100 h-100 top-0 start-0" style="background: radial-gradient(circle, rgba(0, 242, 254, 0.03) 0%, transparent 70%); pointer-events: none;"></div>
+                                <i class="fas fa-microphone-lines fa-4x mb-4 text-dim opacity-50"></i>
+                                <h5 class="fw-bold mb-3" style="color: var(--text-main); letter-spacing: 1px;">Transceiver Ready</h5>
+                                <p class="text-dim small mb-4 text-uppercase" style="letter-spacing: 1px;">Formats: WAV, MP3, FLAC (16MB Limit)</p>
+                                <div class="d-flex justify-content-center">
+                                    <input type="file" class="form-control form-control-glass py-3 rounded-pill" style="max-width: 450px;" id="scan" name="scan" accept=".wav,.mp3,.ogg,.flac" required>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" id="analyzeUploadBtn" class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold text-uppercase shadow-lg" style="letter-spacing: 1px; min-width: 280px;">
+                                    <i class="fas fa-microchip me-2"></i>Initiate Neural Analysis
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tab-pane fade" id="record" role="tabpanel">
+                        <div class="record-zone rounded-4 p-5 text-center mb-5 position-relative overflow-hidden">
+                            <div id="recordingUI">
+                                <i class="fas fa-circle-nodes fa-4x mb-4 text-danger opacity-50" id="micIcon"></i>
+                                <h5 class="fw-bold mb-3 text-uppercase" id="recordingStatus" style="color: #ef4444; letter-spacing: 2px;">Sensor Calibrated</h5>
+                                <p class="text-dim small mb-4 text-uppercase" style="letter-spacing: 1px;">Ensure clean acoustic environment</p>
+                                
+                                <div class="d-flex justify-content-center gap-4">
+                                    <button type="button" id="startRecordBtn" class="btn btn-danger btn-lg rounded-circle d-flex align-items-center justify-content-center record-btn-glow" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-microphone-alt fs-2 text-dark"></i>
+                                    </button>
+                                    <button type="button" id="stopRecordBtn" class="btn btn-dark btn-lg rounded-circle d-flex align-items-center justify-content-center d-none" style="width: 80px; height: 80px; border: 2px solid #ef4444;">
+                                        <i class="fas fa-stop fs-2 text-danger"></i>
+                                    </button>
+                                </div>
+                                <div id="recordingTimer" class="mt-4 font-monospace text-danger h4 d-none">00:00:00</div>
+                            </div>
+
+                            <div id="playbackUI" class="d-none">
+                                <div class="p-4 rounded-4 bg-dark mb-4 border border-success" style="background: rgba(16, 185, 129, 0.05) !important;">
+                                    <h5 class="fw-bold text-uppercase mb-4" style="color: #10b981; letter-spacing: 1.5px;"><i class="fas fa-check-double me-2"></i>Signal Locked</h5>
+                                    <audio id="audioPlayback" controls class="w-100 mb-0" style="filter: invert(100%) hue-rotate(180deg);"></audio>
+                                </div>
+                                <div class="d-flex justify-content-center gap-4">
+                                    <button type="button" id="retryRecordBtn" class="btn action-btn fw-bold rounded-pill px-5 py-3 text-uppercase" style="letter-spacing: 1px;">
+                                        <i class="fas fa-redo me-2"></i>Recalibrate
+                                    </button>
+                                    <form action="{{ url_for('upload_scan') }}" method="POST" enctype="multipart/form-data" id="liveAudioForm" onsubmit="return showLiveLoadingState()">
+                                        <input type="file" name="scan" id="hiddenAudioInput" class="d-none">
+                                        <button type="submit" id="analyzeLiveBtn" class="btn btn-primary fw-bold rounded-pill px-5 py-3 shadow-lg text-uppercase" style="letter-spacing: 1px;">
+                                            <i class="fas fa-brain me-2"></i>Analyze Telemetry
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card glass-card border-0 overflow-hidden">
+            <div class="card-header bg-transparent border-bottom p-4 p-md-5 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center" style="border-color: rgba(255,255,255,0.05) !important;">
+                <h5 class="fw-bolder mb-3 mb-sm-0 text-uppercase tracking-widest" style="color: var(--text-main);">
+                    <i class="fas fa-list-ul me-3" style="color: var(--accent-cyan);"></i>Diagnostic Registry
+                </h5>
+                <span class="badge rounded-pill px-4 py-2" style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim); border: 1px solid rgba(255,255,255,0.1); font-size: 0.75rem; letter-spacing: 1px;">HISTORICAL DATASET</span>
+            </div>
+            <div class="card-body p-0">
+                {% if scan_reports %}
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0" style="color: var(--text-main); border-collapse: separate; border-spacing: 0;">
+                        <thead style="background: rgba(0,0,0,0.3);">
+                            <tr>
+                                <th class="ps-5 py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Chronology</th>
+                                <th class="py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Acoustic Vector</th>
+                                <th class="py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Neural Probability</th>
+                                <th class="pe-5 py-4 text-end text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Protocol</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for report in scan_reports %}
+                            <tr class="table-row-hover" style="border-bottom: 1px solid rgba(255,255,255,0.02);">
+                                <td class="ps-5 py-4">
+                                    <div class="fw-bold text-uppercase" style="color: var(--text-main); font-size: 0.9rem; letter-spacing: 1px;">{{ report.created_at.strftime('%b %d, %Y') }}</div>
+                                    <div class="small font-monospace" style="color: var(--text-dim);">{{ report.created_at.strftime('%H:%M:%S') }}</div>
+                                </td>
+                                <td class="py-4">
+                                    <span class="badge rounded-pill px-3 py-2 text-uppercase" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); letter-spacing: 1px; font-weight: 500;">
+                                        <i class="fas fa-wave-square me-2" style="color: #ef4444;"></i> {{ report.disease_type.replace('_', ' ') }}
+                                    </span>
+                                </td>
+                                <td class="py-4">
+                                    {% set conf = report.confidence * 100 %}
+                                    {% set conf_color = '#10b981' %}
+                                    {% if conf < 70 %} {% set conf_color = '#ef4444' %} {% elif conf < 90 %} {% set conf_color = '#f59e0b' %} {% endif %}
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="progress rounded-pill" style="width: 100px; height: 6px; background-color: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                                            <div class="progress-bar rounded-pill" style="width: {{ conf }}%; background-color: {{ conf_color }}; box-shadow: 0 0 10px {{ conf_color }};"></div>
+                                        </div>
+                                        <span class="font-monospace small" style="color: {{ conf_color }};">{{ "%.2f"|format(conf) }}%</span>
+                                    </div>
+                                </td>
+                                <td class="pe-5 py-4">
+                                    <div class="d-flex justify-content-end gap-3">
+                                        <a href="{{ url_for('view_scan_report', report_id=report.id) }}" class="btn action-btn btn-sm px-3 rounded-pill d-flex align-items-center gap-2" title="Inspect Sequence">
+                                            <i class="fas fa-microscope text-info"></i> Inspect
+                                        </a>
+                                        <form action="/delete_report/{{ report.id }}" method="POST" class="m-0" onsubmit="return confirm('CRITICAL: Purge this diagnostic sequence from neural database?');">
+                                            <button type="submit" class="btn action-btn btn-sm px-3 rounded-pill text-danger" title="Purge Record">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 100px; height: 100px; background: rgba(0,0,0,0.3); border: 1px dashed rgba(255,255,255,0.1);">
+                        <i class="fas fa-folder-open text-muted fa-2x" style="opacity: 0.5;"></i>
+                    </div>
+                    <h6 class="fw-bolder text-uppercase tracking-widest mb-2" style="color: var(--text-dim);">Archive Null</h6>
+                    <p class="small mb-0 font-monospace" style="color: rgba(255,255,255,0.3);">No telemetry reports associated with this identity.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    let mediaRecorder;
+    let audioChunks = [];
+    let recordTimer;
+    let seconds = 0;
+
+    const startBtn = document.getElementById('startRecordBtn');
+    const stopBtn = document.getElementById('stopRecordBtn');
+    const retryBtn = document.getElementById('retryRecordBtn');
+    const statusText = document.getElementById('recordingStatus');
+    const timerDisplay = document.getElementById('recordingTimer');
+    const micIcon = document.getElementById('micIcon');
+    const recordingUI = document.getElementById('recordingUI');
+    const playbackUI = document.getElementById('playbackUI');
+    const audioPlayback = document.getElementById('audioPlayback');
+    const hiddenAudioInput = document.getElementById('hiddenAudioInput');
+
+    function updateTimer() {
+        seconds++;
+        const hrs = Math.floor(seconds / 3600).toString().padStart(2, '0');
+        const mins = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+        const secs = (seconds % 60).toString().padStart(2, '0');
+        timerDisplay.textContent = `${hrs}:${mins}:${secs}`;
+    }
+
+    startBtn.addEventListener('click', async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) audioChunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                clearInterval(recordTimer);
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                
+                audioPlayback.src = audioUrl;
+                
+                const file = new File([audioBlob], `live_telemetry_${Date.now()}.wav`, { type: 'audio/wav' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                hiddenAudioInput.files = dataTransfer.files;
+
+                recordingUI.classList.add('d-none');
+                playbackUI.classList.remove('d-none');
+                
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            mediaRecorder.start();
+            
+            startBtn.classList.add('d-none');
+            stopBtn.classList.remove('d-none');
+            timerDisplay.classList.remove('d-none');
+            micIcon.classList.add('fa-beat-fade');
+            micIcon.style.color = '#ef4444';
+            statusText.textContent = 'Ingesting Live Feed...';
+            
+            seconds = 0;
+            timerDisplay.textContent = '00:00:00';
+            recordTimer = setInterval(updateTimer, 1000);
+
+        } catch (err) {
+            alert('CRITICAL: Microphone handshake failed. Verify hardware permissions.');
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+        }
+    });
+
+    retryBtn.addEventListener('click', () => {
+        playbackUI.classList.add('d-none');
+        recordingUI.classList.remove('d-none');
+        startBtn.classList.remove('d-none');
+        stopBtn.classList.add('d-none');
+        timerDisplay.classList.add('d-none');
+        micIcon.classList.remove('fa-beat-fade');
+        micIcon.style.color = '';
+        statusText.textContent = 'Sensor Calibrated';
+        statusText.style.color = '#ef4444';
+        hiddenAudioInput.value = '';
+        audioPlayback.src = '';
+    });
+
+    function showUploadLoadingState() {
+        const btn = document.getElementById('analyzeUploadBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-3"></i>SYNCHRONIZING NEURAL CORE...';
+        btn.classList.add('disabled');
+        return true;
+    }
+
+    function showLiveLoadingState() {
+        if (!hiddenAudioInput.files.length) {
+            alert("VOID: No telemetry data found. Restart capture.");
+            return false;
+        }
+        const btn = document.getElementById('analyzeLiveBtn');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-3"></i>DECODING SIGNAL...';
+        btn.classList.add('disabled');
+        return true;
+    }
+</script>
+{% endblock %}

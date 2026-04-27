@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center position-relative" style="min-height: 80vh; z-index: 1;">
+    <div class="position-absolute top-50 start-50 translate-middle" style="width: 100vw; height: 100vh; background: radial-gradient(circle at center, rgba(16, 185, 129, 0.05) 0%, transparent 60%); z-index: -1; pointer-events: none;"></div>
+
+    <div class="col-md-7 col-lg-5">
+        <div class="card p-4 p-md-5 border-0" style="background: rgba(21, 30, 50, 0.85); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(16, 185, 129, 0.2); transition: transform 0.3s ease;">
+            
+            <div class="text-center mb-5">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 position-relative" style="width: 90px; height: 90px; background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.3); box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);">
+                    <div class="position-absolute w-100 h-100 rounded-circle pulse-ring" style="border: 2px solid rgba(16, 185, 129, 0.4);"></div>
+                    <i class="fas fa-user-injured fa-3x" style="color: #10b981; filter: drop-shadow(0 0 10px rgba(16,185,129,0.6));"></i>
+                </div>
+                <h2 class="fw-bolder mb-2" style="color: var(--text-main); letter-spacing: -0.5px;">Patient Portal</h2>
+                <p class="small text-uppercase mb-0" style="color: var(--text-dim); letter-spacing: 2.5px; font-size: 0.75rem;">Identity Verification</p>
+            </div>
+            
+            <form method="POST" action="{{ url_for('patient_login') }}">
+                <div class="mb-5 position-relative">
+                    <label for="phone" class="form-label fw-bold small text-uppercase mb-3" style="color: #10b981; letter-spacing: 1.5px; font-size: 0.75rem;">Registered Comms Frequency (Phone)</label>
+                    <div class="input-group" style="border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);">
+                        <span class="input-group-text border-0" style="background: rgba(0,0,0,0.4); color: var(--text-dim); padding-left: 1.2rem;">
+                            <i class="fas fa-mobile-retro"></i>
+                        </span>
+                        <input type="tel" class="form-control border-0 py-3 text-white focus-glow" id="phone" name="phone" placeholder="10-digit signal code" pattern="[0-9]{10}" required style="background: rgba(0,0,0,0.4); box-shadow: none; letter-spacing: 2px;">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn w-100 py-3 rounded-pill fw-bold text-uppercase d-flex align-items-center justify-content-center gap-2" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #000; letter-spacing: 1.5px; font-size: 0.95rem; border: none; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);">
+                    Access History <i class="fas fa-satellite-dish"></i>
+                </button>
+            </form>
+            
+            <div class="mt-5 pt-4 text-center" style="border-top: 1px solid rgba(255,255,255,0.05);">
+                <div class="p-3 rounded-3" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.03);">
+                    <p class="text-dim small mb-0 lh-lg">
+                        <i class="fas fa-shield-halved me-2" style="color: #10b981;"></i> 
+                        First-time analysis? Your profile must be initialized by an authorized clinical operator at your healthcare facility.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pulse-ring {
+        animation: pulseCustom 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+    }
+    
+    @keyframes pulseCustom {
+        0% { transform: scale(0.9); opacity: 0.8; }
+        100% { transform: scale(1.4); opacity: 0; }
+    }
+
+    .focus-glow:focus {
+        background: rgba(0, 0, 0, 0.6) !important;
+        outline: none;
+    }
+    
+    .input-group:focus-within {
+        border-color: rgba(16, 185, 129, 0.4) !important;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 15px rgba(16, 185, 129, 0.1) !important;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        color: #10b981 !important;
+    }
+    
+    .card:hover {
+        box-shadow: 0 40px 70px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 0 1px rgba(16, 185, 129, 0.3) !important;
+    }
+</style>
+{% endblock %}

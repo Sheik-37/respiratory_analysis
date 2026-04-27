@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .glass-card {
+        background: rgba(21, 30, 50, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .table-row-hover:hover {
+        background-color: rgba(0, 242, 254, 0.05) !important;
+    }
+    .action-btn {
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-main);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .action-btn:hover {
+        background: rgba(0, 242, 254, 0.1);
+        color: var(--accent-cyan);
+        border-color: rgba(0, 242, 254, 0.3);
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+    }
+    .search-input {
+        background: rgba(0, 0, 0, 0.4) !important;
+        border: 1px solid var(--border-subtle) !important;
+        color: var(--text-main) !important;
+    }
+    .search-input:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.1) !important;
+    }
+    .search-input::placeholder {
+        color: var(--text-dim) !important;
+    }
+    .modal-glass {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(24px);
+        border: 1px solid rgba(0, 242, 254, 0.2);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    }
+    .form-control-glass {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        color: var(--text-main) !important;
+    }
+    .form-control-glass:focus {
+        border-color: var(--accent-cyan) !important;
+        box-shadow: inset 0 0 5px rgba(0, 242, 254, 0.2) !important;
+    }
+    .form-label-custom {
+        color: var(--accent-cyan);
+        letter-spacing: 1.5px;
+        font-size: 0.75rem;
+    }
+</style>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card glass-card overflow-hidden">
+            <div class="card-header bg-transparent p-4 p-md-5" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+                    <div class="d-flex align-items-center gap-4">
+                        <a href="{{ url_for('admin_dashboard') }}" class="btn action-btn rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;" title="Return to Core">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        <div>
+                            <h4 class="mb-1 fw-bolder text-uppercase d-flex align-items-center gap-3" style="color: var(--text-main); letter-spacing: 1px;">
+                                <div class="p-2 rounded bg-dark border" style="border-color: rgba(0, 242, 254, 0.2) !important;">
+                                    <i class="fas fa-bed-pulse" style="color: var(--accent-cyan);"></i>
+                                </div>
+                                Subject Registry
+                            </h4>
+                            <p class="mb-0 text-dim small text-uppercase" style="letter-spacing: 2px;">Acoustic Patient Database</p>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <button class="btn btn-primary rounded-pill fw-bold px-4 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#addPatientModal" style="letter-spacing: 1px;">
+                            <i class="fas fa-user-plus"></i> Initialize Subject
+                        </button>
+                        <button class="btn action-btn rounded-pill fw-bold px-4 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#importModal" style="letter-spacing: 1px;">
+                            <i class="fas fa-database text-warning"></i> Batch Load
+                        </button>
+                        <a href="{{ url_for('export_patients') }}" class="btn action-btn rounded-pill fw-bold px-4 d-flex align-items-center gap-2" style="letter-spacing: 1px;">
+                            <i class="fas fa-download text-success"></i> Extract Data
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-4" style="background: rgba(0,0,0,0.2); border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <div class="input-group rounded-pill overflow-hidden search-input">
+                    <span class="input-group-text bg-transparent border-0 ps-4" style="color: var(--accent-cyan);"><i class="fas fa-radar"></i></span>
+                    <input type="text" class="form-control border-0 py-3 shadow-none bg-transparent text-white" id="patientSearchInput" onkeyup="filterPatients()" placeholder="Scan registry by ID, Identity, Comms, or Vector..." style="letter-spacing: 1px; font-size: 0.9rem;">
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0" style="color: var(--text-main); border-collapse: separate; border-spacing: 0;">
+                        <thead style="background: rgba(0,0,0,0.3);">
+                            <tr>
+                                <th class="ps-5 py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Subject ID</th>
+                                <th class="py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Identity Designation</th>
+                                <th class="py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Comms / Uplink</th>
+                                <th class="py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Origin Sector</th>
+                                <th class="pe-5 py-4 text-uppercase border-0" style="color: var(--text-dim); font-size: 0.7rem; letter-spacing: 2.5px; font-weight: 700;">Pathology Pre-Conditions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientTableBody">
+                            {% if patients %}
+                                {% for patient in patients %}
+                                <tr class="patient-row table-row-hover" style="border-bottom: 1px solid rgba(255,255,255,0.02); transition: background 0.2s;">
+                                    <td class="ps-5 py-4 border-bottom border-dark">
+                                        <span class="badge rounded-pill bg-dark border" style="color: var(--accent-cyan); border-color: rgba(0,242,254,0.3) !important; font-family: monospace; letter-spacing: 1px;">SUB-{{ "%04d"|format(patient.id) }}</span>
+                                    </td>
+                                    <td class="fw-bold py-4 text-uppercase border-bottom border-dark" style="color: var(--text-main); letter-spacing: 1px;">
+                                        {{ patient.name }}
+                                    </td>
+                                    <td class="py-4 border-bottom border-dark">
+                                        <div class="d-flex align-items-center mb-1" style="color: var(--text-dim); font-family: monospace;">
+                                            <i class="fas fa-satellite-dish me-2" style="color: rgba(255,255,255,0.3);"></i> {{ patient.phone }}
+                                        </div>
+                                        <div class="d-flex align-items-center small" style="color: rgba(255,255,255,0.4);">
+                                            <i class="fas fa-envelope me-2"></i> {{ patient.email or 'N/A' }}
+                                        </div>
+                                    </td>
+                                    <td class="py-4 border-bottom border-dark text-uppercase" style="color: var(--text-dim); font-size: 0.85rem; letter-spacing: 1px;">
+                                        {{ patient.district }}
+                                    </td>
+                                    <td class="pe-5 py-4 border-bottom border-dark">
+                                        <div class="text-truncate" style="max-width: 250px; color: var(--text-dim); font-size: 0.85rem;" title="{{ patient.medical_history }}">
+                                            <i class="fas fa-file-medical-alt me-2" style="color: rgba(255,255,255,0.2);"></i> 
+                                            {{ patient.medical_history if patient.medical_history else 'No Baseline Anomalies' }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr id="noRecordsRow">
+                                    <td colspan="5" class="text-center py-5 border-0">
+                                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 100px; height: 100px; background: rgba(0,0,0,0.3); border: 1px dashed rgba(255,255,255,0.1);">
+                                            <i class="fas fa-users-slash text-muted fa-2x" style="opacity: 0.5;"></i>
+                                        </div>
+                                        <h6 class="fw-bolder text-uppercase tracking-wider mb-2" style="color: var(--text-dim); letter-spacing: 3px;">Registry Empty</h6>
+                                        <p class="small mb-0 font-monospace" style="color: rgba(255,255,255,0.3);">No subjects currently initialized in the framework.</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                            <tr id="noSearchResults" style="display: none;">
+                                <td colspan="5" class="text-center py-5 border-0">
+                                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width: 100px; height: 100px; background: rgba(220,53,69,0.1); border: 1px dashed rgba(220,53,69,0.3);">
+                                        <i class="fas fa-search-minus fa-2x text-danger"></i>
+                                    </div>
+                                    <h6 class="fw-bolder text-uppercase tracking-wider mb-2" style="color: var(--text-dim); letter-spacing: 3px;">Signal Lost</h6>
+                                    <p class="small mb-0 font-monospace" style="color: rgba(255,255,255,0.3);">No matching subject designation found.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addPatientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content modal-glass border-0" style="border-radius: 20px;">
+            <div class="modal-header border-bottom p-4" style="border-color: rgba(255,255,255,0.1) !important;">
+                <h5 class="modal-title fw-bold text-uppercase d-flex align-items-center gap-3" style="color: var(--text-main); letter-spacing: 1.5px;">
+                    <div class="p-2 rounded bg-dark border" style="border-color: var(--accent-cyan) !important;">
+                        <i class="fas fa-user-clock" style="color: var(--accent-cyan);"></i>
+                    </div>
+                    Initialize New Subject
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('add_patient') }}" method="POST">
+                <div class="modal-body p-4 p-md-5">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label for="name" class="form-label form-label-custom text-uppercase fw-bold mb-2">Subject Designation / Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-glass py-3 rounded-pill" id="name" name="name" required placeholder="Identity string">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label form-label-custom text-uppercase fw-bold mb-2">Comms Frequency <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control form-control-glass py-3 rounded-pill" id="phone" name="phone" pattern="[0-9]{10}" required placeholder="10-digit numeric code">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label form-label-custom text-uppercase fw-bold mb-2">Data Uplink (Email)</label>
+                            <input type="email" class="form-control form-control-glass py-3 rounded-pill" id="email" name="email" placeholder="subject@node.net">
+                        </div>
+                        <div class="col-12">
+                            <label for="district" class="form-label form-label-custom text-uppercase fw-bold mb-2">Origin Sector / District <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-glass py-3 rounded-pill" id="district" name="district" required placeholder="Geographic origin">
+                        </div>
+                        <div class="col-12">
+                            <label for="address" class="form-label form-label-custom text-uppercase fw-bold mb-2">Physical Coordinates</label>
+                            <textarea class="form-control form-control-glass" id="address" name="address" rows="2" style="border-radius: 16px;" placeholder="Full location tracking data..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label for="medical_history" class="form-label form-label-custom text-uppercase fw-bold mb-2">Respiratory Baseline Vectors</label>
+                            <textarea class="form-control form-control-glass" id="medical_history" name="medical_history" rows="3" style="border-radius: 16px;" placeholder="Input prior anomalies, asthmatic patterns, environmental exposures..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top p-4" style="border-color: rgba(255,255,255,0.1) !important; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
+                    <button type="button" class="btn action-btn px-5 py-2 rounded-pill fw-bold text-uppercase" data-bs-dismiss="modal" style="letter-spacing: 1px;">Abort</button>
+                    <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-bold text-uppercase shadow-lg d-flex align-items-center gap-2" style="letter-spacing: 1px;">
+                        <i class="fas fa-check-circle"></i> Commit to Database
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="importModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-glass border-0" style="border-radius: 20px;">
+            <div class="modal-header border-bottom p-4" style="border-color: rgba(255,255,255,0.1) !important;">
+                <h5 class="modal-title fw-bold text-uppercase d-flex align-items-center gap-3" style="color: var(--text-main); letter-spacing: 1.5px;">
+                    <div class="p-2 rounded bg-dark border" style="border-color: #f59e0b !important;">
+                        <i class="fas fa-database text-warning"></i>
+                    </div>
+                    Batch Data Ingestion
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('import_patients') }}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body p-5 text-center">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4 position-relative" style="width: 100px; height: 100px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                        <div class="position-absolute w-100 h-100 rounded-circle" style="border: 1px dashed rgba(245, 158, 11, 0.5); animation: spin 10s linear infinite;"></div>
+                        <i class="fas fa-satellite fa-3x text-warning"></i>
+                    </div>
+                    <div class="mb-4 text-start">
+                        <label for="file" class="form-label form-label-custom text-uppercase fw-bold mb-2" style="color: #f59e0b;">Select Data Matrix (.csv, .xlsx)</label>
+                        <input type="file" class="form-control form-control-glass py-3 rounded-pill" id="file" name="file" accept=".csv,.xlsx,.xls" required>
+                    </div>
+                    <div class="alert text-start mb-0 border-0" style="background: rgba(0,0,0,0.3); color: var(--text-dim); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05) !important;">
+                        <i class="fas fa-info-circle text-warning me-2"></i><strong style="color: var(--text-main);">Required Parameters:</strong> <span class="font-monospace small">name, phone, email, address, district, medical_history</span>
+                    </div>
+                </div>
+                <div class="modal-footer border-top p-4" style="border-color: rgba(255,255,255,0.1) !important; background: rgba(0,0,0,0.2); border-radius: 0 0 20px 20px;">
+                    <button type="button" class="btn action-btn px-5 py-2 rounded-pill fw-bold text-uppercase" data-bs-dismiss="modal" style="letter-spacing: 1px;">Cancel</button>
+                    <button type="submit" class="btn px-5 py-2 rounded-pill fw-bold text-uppercase text-dark d-flex align-items-center gap-2" style="background: #f59e0b; letter-spacing: 1px; box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);">
+                        <i class="fas fa-play"></i> Initiate
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
+<script>
+function filterPatients() {
+    let input = document.getElementById("patientSearchInput");
+    let filter = input.value.toLowerCase();
+    let tbody = document.getElementById("patientTableBody");
+    let rows = tbody.getElementsByClassName("patient-row");
+    let noResultsRow = document.getElementById("noSearchResults");
+    let visibleCount = 0;
+
+    for (let i = 0; i < rows.length; i++) {
+        let textValue = rows[i].textContent || rows[i].innerText;
+        if (textValue.toLowerCase().indexOf(filter) > -1) {
+            rows[i].style.display = "";
+            visibleCount++;
+        } else {
+            rows[i].style.display = "none";
+        }
+    }
+
+    if (visibleCount === 0 && rows.length > 0) {
+        noResultsRow.style.display = "";
+    } else {
+        noResultsRow.style.display = "none";
+    }
+}
+</script>
+{% endblock %}
